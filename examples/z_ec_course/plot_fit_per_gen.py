@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def plot_fit_per_gen():
-    path = "__data__/1_morphology_only_evolution_tree"
+    path = "__data__/3_body_brain_joint_evolution_tree_nn_learning"
     data = pd.read_sql(
         "SELECT * FROM individual", sqlite3.connect(f"{path}/database.db")
     )
