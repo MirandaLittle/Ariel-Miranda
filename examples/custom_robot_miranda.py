@@ -39,9 +39,6 @@ from evotorch.neuroevolution import NEProblem
 from torch import nn
 from torch.nn import Tanh
 
-# from ariel.body_phenotypes.robogen_lite.prebuilt_robots.spider_with_blocks import (
-#    body_spider45,
-#)
 from ariel.simulation.controllers.utils.data_get import (
     get_state_from_data as get_robot_state,
 )
@@ -88,21 +85,7 @@ from ariel.utils.tracker import Tracker
 # Custom robot made in robot builder
 
 from ariel.body_phenotypes.robogen_lite.config import ModuleFaces
-from ariel.body_phenotypes.robogen_lite.modules.brick import BrickModule
-from ariel.body_phenotypes.robogen_lite.modules.core import CoreModule
-from ariel.body_phenotypes.robogen_lite.modules.hinge import HingeModule
 
-
-from ariel.body_phenotypes.robogen_lite.config import ModuleFaces
-from ariel.body_phenotypes.robogen_lite.modules.brick import BrickModule
-from ariel.body_phenotypes.robogen_lite.modules.core import CoreModule
-from ariel.body_phenotypes.robogen_lite.modules.hinge import HingeModule
-
-
-from ariel.body_phenotypes.robogen_lite.config import ModuleFaces
-from ariel.body_phenotypes.robogen_lite.modules.brick import BrickModule
-from ariel.body_phenotypes.robogen_lite.modules.core import CoreModule
-from ariel.body_phenotypes.robogen_lite.modules.hinge import HingeModule
 
 
 from ariel.body_phenotypes.robogen_lite.config import ModuleFaces
@@ -500,7 +483,7 @@ def evolve(world, model, data) -> tuple[np.ndarray, int]:
             data.mocap_pos[target_mocap_id] = target_pos
 
             # 1. Capture Initial State BEFORE simulation
-            initial_pos = np.array(data.qpos[0:3].copy())
+            xy1 = np.array(data.qpos[0:3].copy())
             target_pos_arr = np.array(target_pos)
 
             # Run Simulation
@@ -516,40 +499,28 @@ def evolve(world, model, data) -> tuple[np.ndarray, int]:
             )
 
             # 2. Capture Final State AFTER simulation
-            final_pos = np.array(data.qpos[0:3].copy())
-            final_z_height = final_pos[2]
+            xy2 = np.array(data.qpos[0:3].copy())
+            
 
             # 3. Route to the correct fitness function based on terminal args
-            if args.fitness == "delta":
-                score = fitness_delta_distance(
-                    initial_pos, final_pos, target_pos_arr
+            if args.fitness == "displacement":
+                score = xy_displacement(xy1, xy2)
+            
+            elif args.fitness == "x speed":
+                score = x_speed(
+                    xy1=xy1,
+                    xy2=xy2,
+                    dt=metrics["time_to_target"],
                 )
-            elif args.fitness == "distance":
-                score = distance_to_target(final_pos, target_pos_arr)
-            elif args.fitness == "survival":
-                score = fitness_survival_and_locomotion(
-                    initial_pos, final_pos, target_pos_arr, final_z_height
-                )
-            elif args.fitness == "efficiency":
-                # Assuming 0.0 for effort right now unless you track it in run_vision_simulation
-                score = fitness_distance_and_efficiency(
-                    initial_pos, final_pos, target_pos_arr, 0.0
-                )
-            elif args.fitness == "direct":
-                score = fitness_direct_path(
-                    initial_pos,
-                    final_pos,
-                    target_pos_arr,
-                    metrics["path_length"],
-                )
-            elif args.fitness == "speed":
-                score = fitness_speed_to_target(
-                    time_to_target=metrics["time_to_target"],
-                    duration=DURATION,
-                    min_distance_to_target=metrics["min_distance_to_target"],
-                )
+            elif args.fitness == "y speed":
+                score = y_speed(
+                    xy1=xy1,
+                    xy2=xy2,
+                    dt=metrics["time_to_target"],
+                            )    
+              
             else:
-                score = distance_to_target(final_pos, target_pos_arr)
+                score = xy_displacement(xy1, xy2)
             total_fitness += score
 
         return total_fitness / len(TARGET_POSITIONS)
@@ -721,7 +692,7 @@ if __name__ == "__main__":
 
     # Setup VideoRecorder
     video_recorder = VideoRecorder(
-        file_name="spider_vision_best", output_folder=path_to_video_folder
+        file_name="insect_vision_best", output_folder=path_to_video_folder
     )
 
     # Setup Visualization Options
