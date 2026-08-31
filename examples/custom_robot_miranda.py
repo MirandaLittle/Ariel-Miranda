@@ -194,8 +194,8 @@ parser.add_argument(
 parser.add_argument(
     "--fitness",
     type=str,
-    default="distance",
-    choices=["delta", "efficiency", "survival", "direct", "distance", "speed"],
+    default="displacement",
+    choices=["displacement", "x_speed", "y_speed"],
 )
 parser.add_argument(
     "--reach-radius",
@@ -506,13 +506,13 @@ def evolve(world, model, data) -> tuple[np.ndarray, int]:
             if args.fitness == "displacement":
                 score = xy_displacement(xy1, xy2)
             
-            elif args.fitness == "x speed":
+            elif args.fitness == "x_speed":
                 score = x_speed(
                     xy1=xy1,
                     xy2=xy2,
                     dt=metrics["time_to_target"],
                 )
-            elif args.fitness == "y speed":
+            elif args.fitness == "y_speed":
                 score = y_speed(
                     xy1=xy1,
                     xy2=xy2,
