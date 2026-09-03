@@ -4,7 +4,7 @@ from ariel.body_phenotypes.robogen_lite.modules.core import CoreModule
 from ariel.body_phenotypes.robogen_lite.modules.hinge import HingeModule
 
 
-def custom_robot() -> CoreModule:
+def insect_small() -> CoreModule:
     """Custom robot body built with the 3D editor."""
     core = CoreModule(index=0)
     hinge_0 = HingeModule(index=1)
