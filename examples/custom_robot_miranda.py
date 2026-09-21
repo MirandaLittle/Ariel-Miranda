@@ -83,7 +83,7 @@ from ariel.utils.runners import simple_runner
 from ariel.utils.tracker import Tracker
 
 # prebuilt robot 
-from ariel.body_phenotypes.robogen_lite.prebuilt_robots.spider import spider
+from ariel.body_phenotypes.custom_robots_miranda.insect_small7 import insect_small
 
 
 
@@ -512,8 +512,8 @@ def main():
     )
 
     # Spawn Spider
-    spider_core = spider()
-    world.spawn(spider_core.spec, position=[0, 0, 0.1])
+    insect_core = insect_small()
+    world.spawn(insect_core.spec, position=[0, 0, 0.1])
 
     model = world.spec.compile()
     data = mujoco.MjData(model)
@@ -600,7 +600,7 @@ if __name__ == "__main__":
 
     # Setup VideoRecorder
     video_recorder = VideoRecorder(
-        file_name="spider_vision_best", output_folder=path_to_video_folder
+        file_name="insect_vision_best", output_folder=path_to_video_folder
     )
 
     # Setup Visualization Options

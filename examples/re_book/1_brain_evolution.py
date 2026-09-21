@@ -38,9 +38,14 @@ from evotorch.neuroevolution import NEProblem
 from torch import nn
 from torch.nn import Tanh
 
-from ariel.body_phenotypes.robogen_lite.prebuilt_robots.spider_with_blocks import (
-    body_spider45,
-)
+# from ariel.body_phenotypes.robogen_lite.prebuilt_robots.spider_with_blocks import (
+#     body_spider45,
+# 
+
+# Prebuilt robot
+from ariel.body_phenotypes.custom_robots_miranda.insect_small12 import insect_small
+
+
 from ariel.simulation.controllers.utils.data_get import (
     get_state_from_data as get_robot_state,
 )
@@ -496,8 +501,8 @@ def main():
     )
 
     # Spawn Spider
-    spider_core = body_spider45()
-    world.spawn(spider_core.spec, position=[0, 0, 0.1])
+    insect_core = insect_small()
+    world.spawn(insect_core.spec, position=[0, 0, 0.1])
 
     model = world.spec.compile()
     data = mujoco.MjData(model)
@@ -584,7 +589,7 @@ if __name__ == "__main__":
 
     # Setup VideoRecorder
     video_recorder = VideoRecorder(
-        file_name="spider_vision_best", output_folder=path_to_video_folder
+        file_name="insect_small12_vision_best", output_folder=path_to_video_folder
     )
 
     # Setup Visualization Options
